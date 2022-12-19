@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api
+  name: api
+spec:
+  ports:
+    - name: "api"
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer # <-- locally this maps to localhost
+  selector:
+    app: api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - image: ws-0-k8s-temp
+          imagePullPolicy: Never # <-- use local..
+          name: api
+          ports:
+          - containerPort: 5000
+          resources: {}
+      restartPolicy: Always
+status: {}
